@@ -1,0 +1,347 @@
+import random, pwinput
+
+
+def cadastro ():
+  print ()
+  print ('CADASTRAR CONTA CORRENTE')
+  print ('____________________________________')
+  print()
+  print ('MACK BANK – CADASTRO DE CONTA')
+  print()
+  conta = random.randint(1000, 9999)
+  print('NÚMERO DA CONTA:', conta)
+  print ()
+
+  nome = ''
+  telefone =''
+  email =''
+  saldo_inicial = ''
+  limite = ''
+  senha = ''
+  senha2 = ''
+
+  while nome == '':
+    nome = input('NOME COMPLETO DO CLIENTE: ')
+    print ()
+    if nome.find(' ') == -1:
+      nome = ''
+      print('Por favor digite o nome completo')
+      print ()
+  while telefone == '':
+    telefone = input('TELEFONE COM DDD.......: ')
+    print ()
+    if len(telefone) != 12:
+      print ('TELEFONE INVÁLIDO')
+      telefone = ''
+      print ()
+  while email == '':
+    email = input('EMAIL..........: ')
+    print()
+    if email.find('@') == -1:
+      email = ''
+      print ('Email inválido. Por favor digite um email válido.')
+      print ()
+    elif email.find('.br') == -1 and email.find('.com') == -1:
+      email = ''
+      print ('Email inválido. Por favor digite um email válido.')
+      print ()
+  while saldo_inicial == '':
+    saldo_inicial = int (input('SALDO INICIAL...: R$ '))
+    print()
+    if saldo_inicial < 1000:
+      print ('Saldo insuficiente.')
+      saldo_inicial = ''
+      print ()
+    else:
+      saldo_inicial = saldo_inicial
+  while limite == '':
+    limite = int(input('LIMITE DE CRÉDITO: R$ '))
+    print()
+    if limite < 0:
+      print('O valor informado não é um limite válido.')
+      limite = ''
+      print()
+    else:
+      limite = limite
+  while senha == '':
+    senha = pwinput.pwinput('SENHA: ')
+    print()
+    if len(senha) != 6:
+      print ('Senha inválida. Por favor digite uma senha com 6 dígitos.')
+      senha = ''
+      print()
+  while senha2 == '':
+    senha2 = pwinput.pwinput('REPITA A SENHA: ')
+    print ()
+    if senha2 != senha:
+      print ('As senhas não coincidem. Por favor digite novamente.')
+      senha2 = ''
+      print ()
+    else:
+      senha2 = senha2
+  bloqueio = 0
+  dados = [conta, nome, telefone, email, saldo_inicial, limite, senha, bloqueio]
+  print ()
+  print ('Cadastro realizado com sucesso!')
+  print ()
+  input('Pressione qualquer tecla caso queira voltar ao menu.  ')
+  print ('____________________________________')
+  print ()
+  return dados
+
+def depositar (dados):
+  print ()
+  print ('DEPOSITAR')
+  print ('____________________________________')
+  print()
+  print ('MACK BANK – DEPÓSITO DA CONTA')
+  print()
+  if dados[0] == 0:
+    print ('Para acessar essa área faça o cadastro.')
+    print()
+  else:
+    conta2 = int (input('INFORME O NÚMERO DA CONTA: '))
+    if conta2 != dados[0]:
+      print()
+      print('Conta não exite. Faça o cadastro para acessar essa area.')
+      print()
+    elif conta2 == dados[0]:
+      print()
+      print ('NOME DO CLIENTE: ', dados [1])
+      print()
+      deposito = 0
+      while deposito == 0:
+        deposito = float(input ('VALOR DO DEPÓSITO: R$'))
+        print()
+      if deposito > 0:
+        saldo_total = dados[4] + deposito
+        dados[4] = saldo_total
+        print ('SALDO ATUAL: R$', saldo_total)
+        print ()
+        historico('DEPÓSITO: R$', deposito )
+      else:
+        print ('VALOR INVÁLIDO')
+        print ()
+
+  input('Pressione qualquer tecla caso queira voltar ao menu.  ')
+  print ('____________________________________')
+  print ()
+  return dados 
+
+def sacar (dados):
+  print ()
+  print ('SACAR')
+  print ('____________________________________')
+  print()
+  print ('MACK BANK – SAQUE DA CONTA')
+  print()
+  if dados[0] == 0:
+    print ('Para acessar essa área faça o cadastro.')
+    print()
+  else:
+    conta2 = int (input('INFORME O NÚMERO DA CONTA: '))
+    if conta2 == dados[0]:
+      print()
+      print ('NOME DO CLIENTE: ', dados [1])
+      print()
+      for i in range (1,4):
+        senha = pwinput.pwinput('SENHA: ')
+        print()
+        if senha != dados[6]:
+          print ('Senha inválida.')
+          senha = ''
+          print()
+        else:
+          saque = 0
+          while saque == 0:
+            saque = float(input ('VALOR DO SAQUE: R$'))
+            print()
+            if saque > 0 and (saque <= dados[4]) or (saque > dados[4] and saque <= dados[4] + dados[5]) :
+              saldo_total = dados[4] - saque
+              dados[4] = saldo_total
+              print ('SALDO ATUAL: R$', saldo_total)
+              print ()
+              if saldo_total < 0:
+                print ('VOCÊ ESTÁ UTILIZANDO SEU LIMITE DE CRÉDITO.')
+                print()
+            else:
+              print('VALOR INVÁLIDO')
+              print()
+              saque = 0
+          historico('SAQUE: R$', saque )
+        break
+    else:
+      print()
+      print('Conta não exite. Faça o cadastro para acessar essa area.')
+      print()
+    if i == 3:
+      print ('NÚMERO DE TENTATIVAS ESGOTADO.')
+      print ()
+      dados[7] = 1
+      print()
+  input('Pressione qualquer tecla caso queira voltar ao menu.  ')
+  print ('____________________________________')
+  print ()
+  return dados 
+
+def saldo (dados):
+  print ()
+  print ('CONSULTAR SALDO')
+  print ('____________________________________')
+  print()
+  print ('MACK BANK – CONSULTA SALDO')
+  print()
+  if dados[0] == 0:
+    print ('Para acessar essa área faça o cadastro.')
+    print()
+  else:
+    conta2 = int (input('INFORME O NÚMERO DA CONTA: '))
+    if conta2 == dados[0]:
+      print()
+      print ('NOME DO CLIENTE: ', dados [1])
+      print()
+      for i in range (1,4):
+        senha = pwinput.pwinput('SENHA: ')
+        print()
+        if senha != dados[6]:
+          print ('Senha inválida.')
+          senha = ''
+          print()
+        else:
+          print ('SALDO ATUAL: R$', dados[4])
+          print ()
+          print ('LIMITE DE CRÉDITOS: R$', dados[5])
+          print()
+        if dados[4] < 0:
+          print ('Atenção ao seu saldo!.')
+          print()
+        break
+      if i == 3:
+        print ('NÚMERO DE TENTATIVAS ESGOTADO.')
+        print ()
+        dados[7] = 1
+  input('Pressione qualquer tecla caso queira voltar ao menu.  ')
+  print()
+  print ('____________________________________')
+  print ()
+  return dados 
+
+def extrato (dados):
+  print ()
+  print ('CONSULTAR EXTRATO')
+  print ('____________________________________')
+  print()
+  print ('MACK BANK – CONSULTAR EXTRATO')
+  print()
+  if dados[0] == 0:
+    print ('Para acessar essa área faça o cadastro.')
+    print()
+  else:
+    conta2 = int (input('INFORME O NÚMERO DA CONTA:'))
+    if conta2 == dados[0]:
+      print()
+      print ('NOME DO CLIENTE: ', dados [1])
+      print()
+      for i in range (1,4):
+        senha = pwinput.pwinput('SENHA: ')
+        print()
+        if senha != dados[6]:
+          print ('Senha inválida.')
+          senha = ''
+          print()
+        else:
+          print ('LIMITE DE CRÉDITOS: R$', dados[5])
+          print()
+          print('ULTIMAS OPERAÇÕES:')
+          print()
+          i = 0
+          linhas = len(historico_dados)
+          while i < linhas:
+            print (historico_dados[i])
+            i += 1
+            print()
+          print('SALDO EM CONTA: R$', dados[4])
+          print()
+          break
+        if i == 3:
+          print ('NÚMERO DE TENTATIVAS ESGOTADO.')
+          print ()
+          dados[7] = 1
+  input('Pressione qualquer tecla caso queira voltar ao menu.  ')
+  print ('____________________________________')
+  print ()
+  return dados 
+
+def historico(descricao, valor):
+    historico = descricao + ' ' + str(valor)
+    historico_dados.append(historico) 
+
+
+
+def imprime_menu():
+
+  print('TELA INICIAL')
+  print ('____________________________________')
+  print ()
+  print ('MACK BANK – ESCOLHA UMA OPÇÃO')
+  print ()
+  print ('(1) CADASTRAR CONTA CORRENTE')
+  print ('(2) DEPOSITAR')
+  print ('(3) SACAR')
+  print ('(4) CONSULTAR SALDO')
+  print ('(5) CONSULTAR EXTRATO')
+  print ('(6) FINALIZAR')
+  print ()
+
+
+opcao = 0
+dados = [0,0,0,0,0,0,0,0]
+historico_dados = []
+escolha= [1, 2 , 3 , 4 , 5 , 6]
+while opcao != 6:
+  imprime_menu()
+  opcao= int (input ('SUA OPÇÃO: '))
+  if opcao not in escolha:
+    print ('Número escolhido não existe, por favor escolha de 1 a 6.')
+
+  else:
+    if opcao == 1:
+      if dados[0] == 0:
+        dados = cadastro ()
+      else:
+        print()
+        print ('CONTA JA CADASTRADA.')
+        print ()
+    elif opcao== 2:
+      dados = depositar(dados)
+    elif opcao== 3:
+      if dados [7] == 0:
+        dados = sacar (dados)
+      else:
+        print()
+        print('CONTA BLOQUEADA.')
+        print()
+    elif opcao== 4:
+      if dados [7] == 0:
+        dados = saldo (dados)
+      else:
+        print ()
+        print('CONTA BLOQUEADA.')
+        print()
+    elif opcao== 5:
+      if dados [7] == 0:
+        dados = extrato (dados)
+      else:
+        print()
+        print('CONTA BLOQUEADA.')
+        print()
+
+print ()
+print('Sessão finalizada.')
+print ()
+print ('FINALIZAÇÃO DO PROGRAMA')
+print ('____________________________________')
+print()
+print ('Este programa foi desenvolvido por')
+print('Amanda Barizan')
+print()
